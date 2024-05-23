@@ -47,6 +47,20 @@ Then we'll connect dvc to a remote storage in S3 to save our DVC cache.
 
 You can follow the step-by-step initial demo in this [file](./basic-demo/README.md)
 
+## Project: Gender Bias Classification in Spanish
+
+Our objetive is to build a text classifier to identify gender bias in Spanish texts
+
+First we build scripts to preprocess the dataset, train a model and evaluate it on a test dataset.
+They are **STILL IN PROGRESS** in the folder `project\scripts`
+
+- Create an ML project pipeline that contains a processing, training, and evaluation step. For dataset ideas check the first link in the suggested materials [1]. I would suggest using small datasets and light libraries (sklearn and datasets) remember, the goal is to explore/learn the tool.
+- For ideas on how to split your ML pipeline, you can check the official example: [2]. I made also a simple ml pipeline with a random forest with iris data if you want to copy: [3]
+- Create a params.yml that is going to store important parameters for the processing and training steps of your ML pipeline. Check these examples: Official example [4], mine more simple example [5]
+- Push your changes to GitHub.
+- Share your progress in Slack and on social media.
+
+
 
 
 
