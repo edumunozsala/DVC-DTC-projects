@@ -1,7 +1,8 @@
-from datasets import load_dataset
+from datasets import load_dataset, Dataset
 import spacy
 from bs4 import BeautifulSoup
 import re
+import os
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
@@ -125,8 +126,9 @@ def preprocess_label(sample: dict) -> dict:
     sample["label"] = 1 if sample["label"] == "biased" else 0
     return sample
     
-def load_datasets_hf(params):
-    dataset = load_dataset(params['data_source'], split='train')
+def load_datasets_csv(params):
+    #dataset = load_dataset(params['data_source'], split='train')
+    dataset = Dataset.from_csv(params['raw_data_path'], header=0)
     dataset = dataset.train_test_split(test_size=params['test_size'], seed=42)
     
     return dataset
@@ -136,12 +138,13 @@ if __name__ == "__main__":
     # Load parameters
     with open('params.yaml') as f:
         params = yaml.safe_load(f)
-    
-    dataset = load_datasets_hf(params)
+    # Leemos el dataset
+    dataset = load_datasets_csv(params)
+    print('Num examples: ', len(dataset))
     # Need to run
     # ! python -m spacy download es_core_news_sm
     # Transform the label to binary
-    dataset = dataset.map(preprocess_label)
+    #dataset = dataset.map(preprocess_label)
     # Load the spacey Language model
     nlp = spacy.load("es_core_news_sm")
     # Instanciar el preprocesador
@@ -166,12 +169,13 @@ if __name__ == "__main__":
     y_test = dataset["test"]["label"]
     
     # Save the X train and test sparse matrix
-    sparse.save_npz("X_train.npz", X_train_transformed)
-    sparse.save_npz("X_test.npz", X_test_transformed)
+    sparse.save_npz(os.path.join(params['processed_data_path'], "X_train.npz"), X_train_transformed)
+    sparse.save_npz(os.path.join(params['processed_data_path'], "X_test.npz"), X_test_transformed)
+    #sparse.save_npz("X_test.npz", X_test_transformed)
     
     # Save the labels
-    with open("y_train.pkl", "wb") as fp:   #Pickling
+    with open(os.path.join(params['processed_data_path'], "y_train.pkl"), "wb") as fp:   #Pickling
         pickle.dump(y_train, fp)
-    with open("y_test.pkl", "wb") as fp:   #Pickling
+    with open(os.path.join(params['processed_data_path'], "y_test.pkl"), "wb") as fp:   #Pickling
         pickle.dump(y_test, fp)
-        
+

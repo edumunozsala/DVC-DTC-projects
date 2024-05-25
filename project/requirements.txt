@@ -3,3 +3,5 @@ scikit-learn==1.2.2
 datasets==2.19.1
 beautifulsoup4==4.12.3
 scipy==1.11.4
+datasets==2.19.1
+# Command to run when installing python -m spacy download es_core_news_sm
