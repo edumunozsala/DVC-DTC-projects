@@ -1,24 +1,6 @@
 from datasets import load_dataset
 import yaml
 
-def preprocess_label(sample: dict) -> dict:
-    """
-    Preprocesa la información de etiquetas de un diccionario de muestra.
-
-    Parámetros
-    ----------
-    sample : dict
-        Diccionario de entrada que contiene información de predicción.
-
-    Devuelve
-    -------
-    dict
-        Diccionario procesado con la información de la etiqueta extraída y almacenada bajo la clave "label".
-    """
-    sample["label"] = sample["prediction"][0]["label"]
-    sample["label"] = 1 if sample["label"] == "biased" else 0
-    return sample
-    
 def load_datasets_hf(params):
     dataset = load_dataset(params['data_source'], split='train')
     #dataset = dataset.train_test_split(test_size=params['test_size'], seed=42)

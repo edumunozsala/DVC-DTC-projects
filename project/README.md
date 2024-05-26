@@ -116,3 +116,20 @@ Now, we canm add S3 as remote storage:
 dvc remote add -d myremote s3://dvc-project-week/project/
 ```
 
+## PIPELINES
+CREATE A STAGE
+```bash
+dvc stage add -n download_data \
+                -p download_data.data_source \
+                -d scripts/download_raw_data.py -d params.yaml \
+                -o data/raw \
+                python -m scripts/download_raw_data.py
+```
+
+git add dvc.yaml
+
+dvc stage add -n process_data \
+                -p process_data.raw_data_path,process_data.test_size,process_data.processed_data_path \
+                -d scripts/process_data.py -d data/raw \
+                -o data/processed \
+                python -m scripts/process_data
