@@ -4,7 +4,8 @@ C: 1.0
 random_state: 42
 test_size: 0.2
 data_source: 'argilla/twitter-genderbias'
-raw_data_path: 'data/pipeline/raw/twitter-genderbias.csv'
+raw_data_path: 'data/pipeline/raw'
+raw_filename: 'twitter-genderbias.csv'
 processed_data_path: 'data/pipeline/processed'
 test_data_path: 'data/pipeline/processed/test_iris.csv'
 model_path: 'model/model.pkl'

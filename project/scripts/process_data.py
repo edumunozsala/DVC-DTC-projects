@@ -128,7 +128,7 @@ def preprocess_label(sample: dict) -> dict:
     
 def load_datasets_csv(params):
     #dataset = load_dataset(params['data_source'], split='train')
-    dataset = Dataset.from_csv(params['raw_data_path'], header=0)
+    dataset = Dataset.from_csv(os.path.join(params['raw_data_path'], params['raw_filename']), header=0)
     dataset = dataset.train_test_split(test_size=params['test_size'], seed=42)
     
     return dataset
@@ -168,6 +168,9 @@ if __name__ == "__main__":
     # Extract the labels for train and test
     y_train = dataset["train"]["label"]
     y_test = dataset["test"]["label"]
+    
+    # Create the output dir
+    os.makedirs(params['processed_data_path'])
     
     # Save the X train and test sparse matrix
     sparse.save_npz(os.path.join(params['processed_data_path'], "X_train.npz"), X_train_transformed)

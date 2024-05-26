@@ -1,0 +1,88 @@
+schema: '2.0'
+stages:
+  download_data:
+    cmd: python scripts/download_raw_data.py
+    deps:
+    - path: scripts/download_raw_data.py
+      hash: md5
+      md5: 92ade8ce5b2cfa1bf24c879a65f28592
+      size: 1012
+    params:
+      params.yaml:
+        data_source: argilla/twitter-genderbias
+        raw_data_path: data/pipeline/raw
+        raw_filename: twitter-genderbias.csv
+    outs:
+    - path: data/pipeline/raw
+      hash: md5
+      md5: 84dc3ded8327611429be0ba7e3df5a24.dir
+      size: 282500
+      nfiles: 1
+  process_data:
+    cmd: python scripts/process_data.py
+    deps:
+    - path: data/pipeline/raw
+      hash: md5
+      md5: 84dc3ded8327611429be0ba7e3df5a24.dir
+      size: 282500
+      nfiles: 1
+    - path: scripts/process_data.py
+      hash: md5
+      md5: e0fddefbe8bf1158821274720dda3530
+      size: 5705
+    params:
+      params.yaml:
+        processed_data_path: data/pipeline/processed
+        raw_data_path: data/pipeline/raw
+        raw_filename: twitter-genderbias.csv
+        test_size: 0.2
+    outs:
+    - path: data/pipeline/processed
+      hash: md5
+      md5: 0ac4ad5c8f3102e1e7f384fcd598716e.dir
+      size: 100160
+      nfiles: 4
+  train:
+    cmd: python scripts/train.py
+    deps:
+    - path: data/pipeline/processed
+      hash: md5
+      md5: 0ac4ad5c8f3102e1e7f384fcd598716e.dir
+      size: 100160
+      nfiles: 4
+    - path: scripts/train.py
+      hash: md5
+      md5: 98f4dabc6202e62ed3c6c92c95b47e5a
+      size: 1768
+    params:
+      params.yaml:
+        C: 1.0
+        max_iters: 200
+        model_path: model/model.pkl
+        processed_data_path: data/pipeline/processed
+        random_state: 42
+    outs:
+    - path: model/model.pkl
+      hash: md5
+      md5: 9fa1faf33bfffbbbed34425cb72c5b94
+      size: 44460
+  evaluation:
+    cmd: python scripts/evaluation.py
+    deps:
+    - path: data/pipeline/processed
+      hash: md5
+      md5: 0ac4ad5c8f3102e1e7f384fcd598716e.dir
+      size: 100160
+      nfiles: 4
+    - path: model/model.pkl
+      hash: md5
+      md5: 9fa1faf33bfffbbbed34425cb72c5b94
+      size: 44460
+    - path: scripts/evaluation.py
+      hash: md5
+      md5: cb2553946a2ef96e980d389955cfb616
+      size: 1397
+    params:
+      params.yaml:
+        model_path: model/model.pkl
+        processed_data_path: data/pipeline/processed

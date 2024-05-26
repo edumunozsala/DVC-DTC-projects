@@ -1,4 +1,6 @@
 from datasets import load_dataset
+import os
+
 import yaml
 
 def load_datasets_hf(params):
@@ -17,13 +19,13 @@ if __name__ == "__main__":
     print('Num examples: ', len(dataset))
     
     #print(dataset['prediction']['label'])
-
+    os.makedirs(params['raw_data_path'])
     # Save the dataset to a csv file
     (
     dataset.to_pandas()
     .assign(label= lambda df: df['prediction'].map(lambda x: x[0]['label']))
     [['text','prediction','label']]
-    ).to_csv(params['raw_data_path'], header=True, index=False)   
+    ).to_csv(os.path.join(params['raw_data_path'], params['raw_filename']), header=True, index=False)   
     #dataset.to_csv(params['raw_data_path'], header=True, index=False)
     #print("Save raw dataset to ",params['raw_data_path'])
         
