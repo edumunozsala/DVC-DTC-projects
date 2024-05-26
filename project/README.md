@@ -81,7 +81,6 @@ git add data/processed/y_test.pkl.dvc data/processed/X_test.npz.dvc data/process
 ```
 We commit the changes to git and save the dvc cache to the remote storage
 
-
 11. Save changes to remote storage
 ```bash
 dvc push
@@ -116,8 +115,11 @@ Now, we canm add S3 as remote storage:
 dvc remote add -d myremote s3://dvc-project-week/project/
 ```
 
-## PIPELINES
-CREATE A STAGE
+## Create a DVC Pipeline
+
+The pipeline consists of 4 stages:
+1. Download the initial dataset
+
 ```bash
 dvc stage add -n download_data --force \
                 -p data_source,raw_data_path,raw_filename \
@@ -126,25 +128,47 @@ dvc stage add -n download_data --force \
                 python scripts/download_raw_data.py
 ```
 
-Inlude in git:
-git add dvc.yaml data/pipeline/.gitignore
-
-git add dvc.yaml
-
+2. Process and featurized the dataset
+```bash
 dvc stage add -n process_data --force \
                 -p raw_data_path,raw_filename,test_size,processed_data_path \
                 -d scripts/process_data.py -d data/pipeline/raw \
                 -o data/pipeline/processed \
                 python scripts/process_data.py
+```
 
+3. Train a Logistic Regression Model
+```bash
 dvc stage add -n train --force \
                 -p processed_data_path,max_iters,C,random_state,model_path \
                 -d scripts/train.py -d data/pipeline/processed \
                 -o model/model.pkl \
                 python scripts/train.py
+```
 
-
+4. Evaluate the model
+```bash
 dvc stage add -n evaluation --force \
                 -p processed_data_path,model_path \
                 -d scripts/evaluation.py -d data/pipeline/processed -d model/model.pkl \
                 python scripts/evaluation.py
+```
+
+Our final pipeline DAG looks like this:
+![Pipeline DAG](images/dvc-dag.png)
+
+
+Once defined we include the new dvc files in git
+```bash
+git add dvc.yaml data/pipeline/.gitignore
+```
+
+Now we can run the pipeline:
+```bash
+dvc repro
+```
+
+And save the DVC cache to the remote storage:
+```bash
+dvc push
+```

@@ -60,6 +60,9 @@ They are **STILL IN PROGRESS** in the folder `project\scripts`
 - Push your changes to GitHub.
 - Share your progress in Slack and on social media.
 
+### Our first approach to the pipeline
+In the project folder you can find [the definition of the pipeline](project/README.md) in DVC.
+
 
 
 
