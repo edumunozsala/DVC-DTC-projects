@@ -119,17 +119,20 @@ dvc remote add -d myremote s3://dvc-project-week/project/
 ## PIPELINES
 CREATE A STAGE
 ```bash
-dvc stage add -n download_data \
-                -p download_data.data_source \
-                -d scripts/download_raw_data.py -d params.yaml \
-                -o data/raw \
-                python -m scripts/download_raw_data.py
+dvc stage add -n download_data --force \
+                -p data_source \
+                -d scripts/download_raw_data.py \
+                -o data/pipeline/raw \
+                python scripts/download_raw_data.py
 ```
+
+Inlude in git:
+git add dvc.yaml data/pipeline/.gitignore
 
 git add dvc.yaml
 
-dvc stage add -n process_data \
-                -p process_data.raw_data_path,process_data.test_size,process_data.processed_data_path \
-                -d scripts/process_data.py -d data/raw \
-                -o data/processed \
-                python -m scripts/process_data
+dvc stage add -n process_data --force \
+                -p raw_data_path,test_size,processed_data_path \
+                -d scripts/process_data.py -d data/pipeline/raw \
+                -o data/pipeline/processed \
+                python scripts/process_data.py
