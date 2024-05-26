@@ -1,5 +1,5 @@
 outs:
-- md5: 4f49be7ce99187e14da2931270e55ec4
-  size: 3463
+- md5: 3a688cf3e71084f54d38ed77fa2835b3
+  size: 782
   hash: md5
   path: y_test.pkl

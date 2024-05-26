@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # Save the dataset to a csv file
     (
     dataset.to_pandas()
-    .assign(label= lambda df: df['prediction'][0][0]['label'])
+    .assign(label= lambda df: df['prediction'].map(lambda x: x[0]['label']))
     [['text','prediction','label']]
     ).to_csv(params['raw_data_path'], header=True, index=False)   
     #dataset.to_csv(params['raw_data_path'], header=True, index=False)

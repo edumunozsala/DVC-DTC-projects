@@ -21,54 +21,38 @@ The destination path is defined in the `params.yaml` file.
 
 Now, in the data directory `data` there is our initial dataset.
 
-Now, we register the data in DVC.
+3. Now, we register the data in DVC.
 
 ```bash
 dvc add data/raw/twitter-genderbias.csv
 ```
 
-Now we include the .
+4. Now we include the .gitignore and .dvc data file in git
 ```bash
 git add data/raw/.gitignore data/raw/twitter-genderbias.csv.dvc
 ```
 
 Let's commit the changes.
 
-Now, we canm add S3 as remote storage:
+5. Now, we can add S3 as remote storage to DVC:
 ```bash
 dvc remote add -d myremote s3://dvc-project-week/project/
 ```
 
-And we save our DVC files to the remote storage
+6. And we save our DVC files to the remote storage
 ```bash
 dvc push
 ```
-
-DVC performs the following action:
-
-- Adds the data/data.txt path to data/.gitignore to ensure that the data file is not tracked by Git but by DVC instead.
-- Generates a .dvc file (e.g., data/data.txt.dvc), which contains metadata about the data file such as its MD5 hash, size, and relative path.
-- Stores a copy of the data file in the DVC cache located in the .dvc/cache directory. This cached file serves as a reference and is identified by a hash value derived from the file’s content, rather than creating a duplicate of the original file
-
-6. Modify the `data.txt` and add it to dvc track
+7. Modify the `twitter-genderbias.csv` and add it to dvc track
 ```bash
-dvc add data/data.txt
+dvc add data/raw/twitter-genderbias.csv
 ```
 7. Commit changes to Git
 ```bash
 git add .
-git commit -m "basic demo: update data.txt"
+git commit -m "project: update initial dataset"
 ```
-8. Modify the data.txt file, add to dvc tracking and commit changes
-
-Once the file has changed run:
-
-```bash
-dvc add data/data.txt
-git add .
-git commit -m "basic demo: update data.txt"
-```
-9. Rollback to a previuos version of the data file
+8. Rollback to a previuos version of the data file
 
 First we need to get the previous commit and run git checkout to that commit:
 
@@ -76,7 +60,7 @@ First we need to get the previous commit and run git checkout to that commit:
 git log
 git checkout <commit_id>
 ```
-Now, data.txt.dvc is pointing to the previous version but not data.txt. To restore the file we need to run a dvc checkuot:
+9. Now, twitter-genderbias.csv.dvc is pointing to the previous version but not twitter-genderbias.csv. To restore the file we need to run a dvc checkuot:
 ```bash
 dvc checkout
 ```
@@ -85,6 +69,22 @@ dvc checkout
 ```bash
 git checkout main
 dvc checkout
+```
+
+And then we process our dataset to get a featurized dataset and we track the files with dvc
+```bash
+dvc add data/processed/*
+```
+And register dvc files in git.
+```bash
+git add data/processed/y_test.pkl.dvc data/processed/X_test.npz.dvc data/processed/y_train.pkl.dvc data/processed/.gitignore data/processed/X_train.npz.dvc
+```
+We commit the changes to git and save the dvc cache to the remote storage
+
+
+11. Save changes to remote storage
+```bash
+dvc push
 ```
 
 ## Configure S3 as Remote storage
@@ -113,21 +113,6 @@ aws s3api create-bucket \
 
 Now, we canm add S3 as remote storage:
 ```bash
-dvc remote add -d myremote s3://dvc-project-week/tests/
+dvc remote add -d myremote s3://dvc-project-week/project/
 ```
 
-Now, let's test it. We create a new data file `data_s3.txt` and add it to dvc tracking
-
-```bash
-dvc add data/data_s3.txt 
-```
-
-Commit the changes to Git
-```bash
-git add .
-```
-
-Finally we can push the DVC cache to the S3 location:
-```bash
-dvc push
-```

@@ -122,7 +122,7 @@ def preprocess_label(sample: dict) -> dict:
     dict
         Diccionario procesado con la información de la etiqueta extraída y almacenada bajo la clave "label".
     """
-    sample["label"] = sample["prediction"][0]["label"]
+    #sample["label"] = sample["prediction"][0]["label"]
     sample["label"] = 1 if sample["label"] == "biased" else 0
     return sample
     
@@ -143,8 +143,9 @@ if __name__ == "__main__":
     print('Num examples: ', len(dataset))
     # Need to run
     # ! python -m spacy download es_core_news_sm
+    
     # Transform the label to binary
-    #dataset = dataset.map(preprocess_label)
+    dataset = dataset.map(preprocess_label)
     # Load the spacey Language model
     nlp = spacy.load("es_core_news_sm")
     # Instanciar el preprocesador

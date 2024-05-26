@@ -8,13 +8,13 @@ from scipy import sparse
 def load_datasets(params):
 
     # Load the features for the train and test dataset
-    X_train = sparse.load_npz(params['X_train'])
-    X_test = sparse.load_npz(params['X_test'])
+    X_train = sparse.load_npz(os.path.join(params['processed_data_path'], 'X_train.npz'))
+    X_test = sparse.load_npz(os.path.join(params['processed_data_path'], 'X_test.npz'))
     
     # Load the labels for the train and test dataset
-    with open(params['y_train'], "rb") as fp:   # Unpickling
+    with open(os.path.join(params['processed_data_path'], 'y_train.pkl'), "rb") as fp:   # Unpickling
         y_train = pickle.load(fp)
-    with open(params['y_test'], "rb") as fp:   # Unpickling
+    with open(os.path.join(params['processed_data_path'], 'y_test.pkl'), "rb") as fp:   # Unpickling
         y_test = pickle.load(fp)
 
     return X_train, X_test, y_train, y_test
@@ -40,7 +40,7 @@ def train_model(params):
     with open(params['model_path'], 'wb') as f:
         pickle.dump(model, f)
     
-    print(f'Model saved to {params['model_path']}')
+    print(f'Model saved to {params["model_path"]}')
 
     # Evaluate model
     score = model.score(X_test, y_test)
